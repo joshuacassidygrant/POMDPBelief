@@ -22,7 +22,7 @@ public class Main {
         gridWorld.addState(3, 0, -0.04f, false);
         gridWorld.addState(3,1 , -1f, true);
         gridWorld.addState(3,2, 1f, true);
-
+        gridWorld.numberOfNonTerminalStates = 9;
         gridWorld.initialize();
         return gridWorld;
     }

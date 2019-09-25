@@ -3,6 +3,7 @@ package com.gridpomdp;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Grid
 {
@@ -10,6 +11,8 @@ public class Grid
     int XWidth;
     int YHeight;
     HashMap<Evidence, List<EvidenceProbabilityEntry>> observationModel;
+    public int numberOfNonTerminalStates;
+    HashMap<State, Double> beliefs;
 
     /**
      * Constructs a grid of the specified width and height
@@ -37,6 +40,8 @@ public class Grid
 
         State state = new State(x, y);
         states[x][y] = state;
+        state.terminal = terminal;
+        state.reward = reward;
     }
 
     /**
@@ -48,7 +53,8 @@ public class Grid
         for (int x = 0; x < XWidth; x++) {
             for (int y = 0; y < YHeight; y++) {
                 State state = states[x][y];
-                if (state == null) break;
+
+                if (state != null) break;
 
                 if (stateAt(x-1, y)) {
                     state.connectedStates.put(Direction.LEFT, states[x-1][y]);
@@ -129,19 +135,41 @@ public class Grid
     }
 
     public void setBeliefsUniform(){
-
+        double value = 1.0 / (double)numberOfNonTerminalStates;
+        HashMap<State, Double> newBeliefs = new HashMap<State, Double>();
+        for (State[] col : states) {
+            for (State state : col) {
+                if (state != null) {
+                    if (state.terminal) {
+                        newBeliefs.put(state, 0.0);
+                    } else {
+                        newBeliefs.put(state, value);
+                    }
+                }
+            }
+        }
+        beliefs = newBeliefs;
+        printEvidenceModule();
     }
 
-    public void setBeliefsState(int x, int y) {
+    public void setBeliefsStateCoord(int x, int y) {
 
     }
 
     public void command(Direction action, Evidence evidence){
-
+        //Updates the belief state based on action and evidence
+        
     }
 
     public void printEvidenceModule(){
-        
+        StringBuilder sb = new StringBuilder();
+        for (Map.Entry<State, Double> entry : beliefs.entrySet()){
+            sb.append(entry.getKey().coordsString());
+            sb.append(": ");
+            sb.append(entry.getValue().toString());
+            sb.append("\n");
+        }
+        System.out.println(sb.toString());
     }
 
     /**

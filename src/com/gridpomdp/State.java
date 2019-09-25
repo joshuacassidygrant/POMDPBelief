@@ -10,6 +10,7 @@ public class State {
     public HashMap<Direction, List<TransitionProbabilityEntry>> transitionModel;
     public int walls;
     public boolean terminal;
+    public double reward;
 
     public State(int x, int y) {
         X = x;
@@ -29,4 +30,7 @@ public class State {
         return this;
     }
 
+    public String coordsString() {
+        return "(" + X + "," + Y + ")";
+    }
 }
