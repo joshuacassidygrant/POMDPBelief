@@ -1,4 +1,4 @@
-package com.company;
+package com.gridpomdp;
 
 public enum Evidence {
     ONE_WALL,

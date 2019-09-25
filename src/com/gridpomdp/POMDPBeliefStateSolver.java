@@ -1,4 +1,4 @@
-package com.company;
+package com.gridpomdp;
 
 public class POMDPBeliefStateSolver {
 
@@ -6,6 +6,10 @@ public class POMDPBeliefStateSolver {
 
     Action action;
     Evidence evidence;
+
+    Map<State, double> getBeliefsByEvidence(){
+
+    }
 
 
 
