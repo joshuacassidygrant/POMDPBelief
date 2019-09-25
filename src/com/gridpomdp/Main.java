@@ -31,7 +31,9 @@ public class Main {
         Grid gridWorld = generateFreshGridWorld();
         gridWorld.setBeliefsUniform();
         gridWorld.command(Direction.UP, Evidence.TWO_WALL);
+        gridWorld.printEvidenceModule();
         gridWorld.command(Direction.UP, Evidence.TWO_WALL);
+        gridWorld.printEvidenceModule();
         gridWorld.command(Direction.UP, Evidence.TWO_WALL);
 
         gridWorld.printEvidenceModule();

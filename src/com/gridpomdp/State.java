@@ -25,9 +25,22 @@ public class State {
         return Evidence.UNDEFINED;
     }
 
+    public Belief getTrueBelief() {
+        if (terminal) return Belief.TERMINAL;
+        if (Y == 3 && !terminal) return Belief.NON_TERMINAL_IN_THIRD_COLUMN;
+        return Belief.ALL_OTHER_NON_TERMINAL;
+    }
+
     public State getConnectedStateOrSelf(Direction direction) {
         if (connectedStates.containsKey(direction)) return connectedStates.get(direction);
         return this;
+    }
+
+    public double getChanceToGoTo(State state, Direction action) {
+        for (TransitionProbabilityEntry e :  transitionModel.get(action)) {
+            if (e.State == state) return e.Probability;
+        }
+        return 0;
     }
 
     public String coordsString() {

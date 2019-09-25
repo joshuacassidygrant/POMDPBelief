@@ -54,7 +54,7 @@ public class Grid
             for (int y = 0; y < YHeight; y++) {
                 State state = states[x][y];
 
-                if (state != null) break;
+                if (state == null) break;
 
                 if (stateAt(x-1, y)) {
                     state.connectedStates.put(Direction.LEFT, states[x-1][y]);
@@ -156,9 +156,34 @@ public class Grid
 
     }
 
-    public void command(Direction action, Evidence evidence){
+    public void command(Direction action, Evidence evidence) {
         //Updates the belief state based on action and evidence
-        
+
+        HashMap<State, Double> newBeliefs = new HashMap<State, Double>();
+        for (Map.Entry<State, Double> entry : beliefs.entrySet()) {
+            State thisState = entry.getKey();
+
+            double observationCertainty = 0;
+
+            for (EvidenceProbabilityEntry epe : observationModel.get(evidence)) {
+                if (epe.Belief == thisState.getTrueBelief()) {
+                    observationCertainty = epe.Certainty;
+                }
+            }
+
+            double certainty = 0;
+            //We will calculate our certainty that we are in each state in the belief set by multiplying the chance that
+            //we were in each previous set by the chance we will transition to that set based on our action:
+            List<State> connectedStates = new ArrayList<State>(thisState.connectedStates.values()); //Empty. Fix this.
+            for (State conState : connectedStates ) {
+                double chance = conState.getChanceToGoTo(thisState, action);
+                double certaintyOfBeingInConState = beliefs.get(conState);
+                certainty += chance * certaintyOfBeingInConState;
+            }
+            newBeliefs.put(thisState, certainty * observationCertainty);
+        }
+        beliefs = newBeliefs;
+
     }
 
     public void printEvidenceModule(){
