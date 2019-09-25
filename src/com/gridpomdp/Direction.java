@@ -1,6 +1,6 @@
 package com.gridpomdp;
 
-public enum Action {
+public enum Direction {
     UP,
     RIGHT,
     DOWN,

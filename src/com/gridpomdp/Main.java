@@ -10,7 +10,7 @@ public class Main {
         gridWorld.addState(0, 1, -0.04f, false);
         gridWorld.addState(0, 2, -0.04f, false);
         gridWorld.addState(1, 0, -0.04f, false);
-        // no state 1, 1
+        // state 1, 1 omitted
         gridWorld.addState(1, 2, -0.04f, false);
         gridWorld.addState(2, 0, -0.04f, false);
         gridWorld.addState(2, 1, -0.04f, false);
