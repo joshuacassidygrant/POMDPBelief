@@ -128,6 +128,22 @@ public class Grid
         System.out.println("Initialization complete.");
     }
 
+    public void setBeliefsUniform(){
+
+    }
+
+    public void setBeliefsState(int x, int y) {
+
+    }
+
+    public void command(Direction action, Evidence evidence){
+
+    }
+
+    public void printEvidenceModule(){
+        
+    }
+
     /**
      * Returns true if there is a state in the grid at the specified x, y coordinates.
      * @param x
