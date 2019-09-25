@@ -8,12 +8,20 @@ public class State {
     public int Y;
     public HashMap<Direction, State> connectedStates;
     public HashMap<Direction, List<TransitionProbabilityEntry>> transitionModel;
-    public HashMap<Direction, List<EvidenceProbabilityEntry>> evidenceModel;
+    public int walls;
+    public boolean terminal;
 
     public State(int x, int y) {
         X = x;
         Y = y;
         connectedStates = new HashMap<Direction, State>();
+    }
+
+    public Evidence getEvidence() {
+        if (terminal) return Evidence.TERMINAL;
+        if (walls == 2) return Evidence.TWO_WALL;
+        if (walls == 1) return Evidence.ONE_WALL;
+        return Evidence.UNDEFINED;
     }
 
     public State getConnectedStateOrSelf(Direction direction) {
