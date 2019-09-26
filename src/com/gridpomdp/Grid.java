@@ -10,9 +10,9 @@ public class Grid
     private State[][] states;
     int XWidth;
     int YHeight;
-    HashMap<Evidence, List<EvidenceProbabilityEntry>> observationModel;
+    Map<Evidence, List<EvidenceProbabilityEntry>> observationModel;
     public int numberOfNonTerminalStates;
-    HashMap<State, Double> beliefs;
+    Map<State, Double> beliefs;
 
     /**
      * Constructs a grid of the specified width and height
@@ -72,7 +72,7 @@ public class Grid
                         state.connectedStates.put(Direction.UP, states[x][y + 1]);
                     }
 
-                    state.walls = 5 - state.connectedStates.size();
+                    state.walls = 4 - state.connectedStates.size();
 
                     state.transitionModel = new HashMap<Direction, List<TransitionProbabilityEntry>>();
 
@@ -134,6 +134,9 @@ public class Grid
         System.out.println("Initialization complete.");
     }
 
+    /**
+     * Initializes the belief state with equal possibility for all non-terminal spaces.
+     */
     public void setBeliefsUniform(){
         double value = 1.0 / (double)numberOfNonTerminalStates;
         HashMap<State, Double> newBeliefs = new HashMap<State, Double>();
@@ -151,6 +154,11 @@ public class Grid
         beliefs = newBeliefs;
     }
 
+    /**
+     * Initializes the belief state with certainty for one specific state.
+     * @param tx state X
+     * @param ty state Y
+     */
     public void setBeliefsStateCoord(int tx, int ty) {
         HashMap<State, Double> newBeliefs = new HashMap<State, Double>();
         for (int x = 0; x < XWidth; x++) {
@@ -170,7 +178,7 @@ public class Grid
     public void command(Direction action, Evidence evidence) {
         //Updates the belief state based on action and evidence
 
-        HashMap<State, Double> newBeliefs = new HashMap<State, Double>();
+        Map<State, Double> newBeliefs = new HashMap<State, Double>();
         for (Map.Entry<State, Double> entry : beliefs.entrySet()) {
             State thisState = entry.getKey();
 
@@ -185,20 +193,26 @@ public class Grid
             double certainty = 0;
             //We will calculate our certainty that we are in each state in the belief set by multiplying the chance that
             //we were in each previous set by the chance we will transition to that set based on our action:
-            List<State> connectedStates = new ArrayList<State>(thisState.connectedStates.values()); //Empty. Fix this.
+            List<State> connectedStates = new ArrayList<State>(thisState.connectedStates.values());
             for (State conState : connectedStates ) {
                 double chance = conState.getChanceToGoTo(thisState, action);
                 double certaintyOfBeingInConState = beliefs.get(conState);
                 certainty += chance * certaintyOfBeingInConState;
             }
 
+            //Since some actions bounce the agent back to its current state, we must check this too.
             double chance = thisState.getChanceToGoTo(thisState, action);
             double certaintyOfBeingInSameState = beliefs.get(thisState);
             certainty += chance * certaintyOfBeingInSameState;
 
             newBeliefs.put(thisState, certainty * observationCertainty);
         }
+
+        newBeliefs = normalizeBeliefs(newBeliefs);
+        validateBeliefs(newBeliefs);
         beliefs = newBeliefs;
+
+        printEvidenceModule();
 
     }
 
@@ -211,6 +225,31 @@ public class Grid
             sb.append("\n");
         }
         System.out.println(sb.toString());
+    }
+
+    private Map<State, Double> normalizeBeliefs(Map<State, Double> beliefMap) {
+        double val = 0;
+        for (Double cert : beliefMap.values()) {
+            val += cert;
+        }
+        double alpha = 1/val;
+
+        for (Map.Entry<State, Double> entry : beliefMap.entrySet()) {
+            beliefMap.put(entry.getKey(), entry.getValue() * alpha);
+        }
+
+        return beliefMap;
+    }
+
+    private void validateBeliefs(Map<State, Double> beliefMap){
+        double count = 0;
+        for (Double cert : beliefMap.values()) {
+            count += cert;
+        }
+
+        if (count < 0.99 || count > 1.01) {
+            System.out.println("Invalid beliefs do not add up to 1. They equal: " + count);
+        }
     }
 
     /**
