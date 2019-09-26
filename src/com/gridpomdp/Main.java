@@ -5,7 +5,9 @@ public class Main {
     public static void main(String[] args) {
 
         qA();
-
+        qB();
+        qC();
+        qD();
     }
 
     public static Grid generateFreshGridWorld() {
@@ -28,13 +30,43 @@ public class Main {
     }
 
     public static void qA() {
+        System.out.println("qA:");
         Grid gridWorld = generateFreshGridWorld();
         gridWorld.setBeliefsUniform();
         gridWorld.command(Direction.UP, Evidence.TWO_WALL);
-        gridWorld.printEvidenceModule();
+        gridWorld.command(Direction.UP, Evidence.TWO_WALL);
         gridWorld.command(Direction.UP, Evidence.TWO_WALL);
         gridWorld.printEvidenceModule();
+    }
+
+    public static void qB() {
+        System.out.println("qB:");
+        Grid gridWorld = generateFreshGridWorld();
+        gridWorld.setBeliefsUniform();
+        gridWorld.command(Direction.UP, Evidence.ONE_WALL);
+        gridWorld.command(Direction.UP, Evidence.ONE_WALL);
+        gridWorld.command(Direction.UP, Evidence.ONE_WALL);
+        gridWorld.printEvidenceModule();
+    }
+
+    public static void qC() {
+        System.out.println("qC:");
+        Grid gridWorld = generateFreshGridWorld();
+        gridWorld.setBeliefsStateCoord(2, 3);
+        gridWorld.command(Direction.RIGHT, Evidence.ONE_WALL);
+        gridWorld.command(Direction.RIGHT, Evidence.ONE_WALL);
+        gridWorld.command(Direction.UP, Evidence.TERMINAL);
+        gridWorld.printEvidenceModule();
+    }
+
+    public static void qD() {
+        System.out.println("qD:");
+        Grid gridWorld = generateFreshGridWorld();
+        gridWorld.setBeliefsStateCoord(1, 1);
         gridWorld.command(Direction.UP, Evidence.TWO_WALL);
+        gridWorld.command(Direction.RIGHT, Evidence.TWO_WALL);
+        gridWorld.command(Direction.RIGHT, Evidence.ONE_WALL);
+        gridWorld.command(Direction.RIGHT, Evidence.ONE_WALL);
 
         gridWorld.printEvidenceModule();
     }

@@ -54,59 +54,59 @@ public class Grid
             for (int y = 0; y < YHeight; y++) {
                 State state = states[x][y];
 
-                if (state == null) break;
+                if (state != null) {
 
-                if (stateAt(x-1, y)) {
-                    state.connectedStates.put(Direction.LEFT, states[x-1][y]);
-                }
-
-                if (stateAt(x+1, y)) {
-                    state.connectedStates.put(Direction.RIGHT, states[x+1][y]);
-                }
-
-                if(stateAt(x, y-1)) {
-                    state.connectedStates.put(Direction.DOWN, states[x][y-1]);
-                }
-
-                if(stateAt(x, y+1)) {
-                    state.connectedStates.put(Direction.UP, states[x][y+1]);
-                }
-
-                state.walls = 4 - state.connectedStates.size();
-
-                state.transitionModel = new HashMap<Direction, List<TransitionProbabilityEntry>>();
-
-                //Build the transition model for state at x, y
-                for (int i = 0; i <= 3; i++) {
-
-                    List<TransitionProbabilityEntry> entries = new ArrayList<TransitionProbabilityEntry>();
-                    TransitionProbabilityEntry e1 = new TransitionProbabilityEntry(state.getConnectedStateOrSelf(Direction.fromInt(i)), 0.8);
-                    TransitionProbabilityEntry e2 = new TransitionProbabilityEntry(state.getConnectedStateOrSelf(Direction.fromInt(i + 1)), 0.1);
-                    TransitionProbabilityEntry e3 = new TransitionProbabilityEntry(state.getConnectedStateOrSelf(Direction.fromInt(i - 1)), 0.1);
-
-                    if (e1.State == e2.State) {
-                        e1.Probability = e1.Probability + e2.Probability;
-                        e2.Probability = 0;
+                    if (stateAt(x - 1, y)) {
+                        state.connectedStates.put(Direction.LEFT, states[x - 1][y]);
                     }
 
-                    if (e1.State == e3.State) {
-                        e1.Probability = e1.Probability + e3.Probability;
-                        e3.Probability = 0;
+                    if (stateAt(x + 1, y)) {
+                        state.connectedStates.put(Direction.RIGHT, states[x + 1][y]);
                     }
 
-                    if (e3.State == e2.State) {
-                        e3.Probability = e3.Probability + e2.Probability;
-                        e2.Probability = 0;
+                    if (stateAt(x, y - 1)) {
+                        state.connectedStates.put(Direction.DOWN, states[x][y - 1]);
                     }
 
+                    if (stateAt(x, y + 1)) {
+                        state.connectedStates.put(Direction.UP, states[x][y + 1]);
+                    }
 
-                    entries.add(e1);
-                    if (e2.Probability > 0) entries.add(e2);
-                    if (e3.Probability > 0) entries.add(e3);
+                    state.walls = 5 - state.connectedStates.size();
 
-                    state.transitionModel.put(Direction.fromInt(i), entries);
+                    state.transitionModel = new HashMap<Direction, List<TransitionProbabilityEntry>>();
+
+                    //Build the transition model for state at x, y
+                    for (int i = 0; i <= 3; i++) {
+
+                        List<TransitionProbabilityEntry> entries = new ArrayList<TransitionProbabilityEntry>();
+                        TransitionProbabilityEntry e1 = new TransitionProbabilityEntry(state.getConnectedStateOrSelf(Direction.fromInt(i)), 0.8);
+                        TransitionProbabilityEntry e2 = new TransitionProbabilityEntry(state.getConnectedStateOrSelf(Direction.fromInt(i + 1)), 0.1);
+                        TransitionProbabilityEntry e3 = new TransitionProbabilityEntry(state.getConnectedStateOrSelf(Direction.fromInt(i - 1)), 0.1);
+
+                        if (e1.State == e2.State) {
+                            e1.Probability = e1.Probability + e2.Probability;
+                            e2.Probability = 0;
+                        }
+
+                        if (e1.State == e3.State) {
+                            e1.Probability = e1.Probability + e3.Probability;
+                            e3.Probability = 0;
+                        }
+
+                        if (e3.State == e2.State) {
+                            e3.Probability = e3.Probability + e2.Probability;
+                            e2.Probability = 0;
+                        }
+
+
+                        entries.add(e1);
+                        if (e2.Probability > 0) entries.add(e2);
+                        if (e3.Probability > 0) entries.add(e3);
+
+                        state.transitionModel.put(Direction.fromInt(i), entries);
+                    }
                 }
-
             }
         }
 
@@ -149,11 +149,22 @@ public class Grid
             }
         }
         beliefs = newBeliefs;
-        printEvidenceModule();
     }
 
-    public void setBeliefsStateCoord(int x, int y) {
-
+    public void setBeliefsStateCoord(int tx, int ty) {
+        HashMap<State, Double> newBeliefs = new HashMap<State, Double>();
+        for (int x = 0; x < XWidth; x++) {
+            for (int y = 0; y < YHeight; y++) {
+                if (states[x][y] != null) {
+                    if (x == tx && y == ty) {
+                        newBeliefs.put(states[x][y], 1.0);
+                    } else {
+                        newBeliefs.put(states[x][y], 0.0);
+                    }
+                }
+            }
+        }
+        beliefs = newBeliefs;
     }
 
     public void command(Direction action, Evidence evidence) {
@@ -180,6 +191,11 @@ public class Grid
                 double certaintyOfBeingInConState = beliefs.get(conState);
                 certainty += chance * certaintyOfBeingInConState;
             }
+
+            double chance = thisState.getChanceToGoTo(thisState, action);
+            double certaintyOfBeingInSameState = beliefs.get(thisState);
+            certainty += chance * certaintyOfBeingInSameState;
+
             newBeliefs.put(thisState, certainty * observationCertainty);
         }
         beliefs = newBeliefs;

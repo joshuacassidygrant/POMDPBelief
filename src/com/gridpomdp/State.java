@@ -37,8 +37,9 @@ public class State {
     }
 
     public double getChanceToGoTo(State state, Direction action) {
-        for (TransitionProbabilityEntry e :  transitionModel.get(action)) {
-            if (e.State == state) return e.Probability;
+
+        for (TransitionProbabilityEntry e : transitionModel.get(action)) {
+            if (e != null && e.State == state) return e.Probability;
         }
         return 0;
     }
