@@ -45,6 +45,6 @@ public class State {
     }
 
     public String coordsString() {
-        return "(" + X + "," + Y + ")";
+        return "(" + (X + 1) + "," + (Y + 1) + ")";
     }
 }

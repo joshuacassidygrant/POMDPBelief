@@ -3,7 +3,6 @@ package com.gridpomdp;
 public class Main {
 
     public static void main(String[] args) {
-
         qA();
         qB();
         qC();
@@ -36,7 +35,7 @@ public class Main {
         gridWorld.command(Direction.UP, Evidence.TWO_WALL);
         gridWorld.command(Direction.UP, Evidence.TWO_WALL);
         gridWorld.command(Direction.UP, Evidence.TWO_WALL);
-        gridWorld.printEvidenceModule();
+        gridWorld.printCurrentBeliefs();
     }
 
     public static void qB() {
@@ -46,7 +45,7 @@ public class Main {
         gridWorld.command(Direction.UP, Evidence.ONE_WALL);
         gridWorld.command(Direction.UP, Evidence.ONE_WALL);
         gridWorld.command(Direction.UP, Evidence.ONE_WALL);
-        gridWorld.printEvidenceModule();
+        gridWorld.printCurrentBeliefs();
     }
 
     public static void qC() {
@@ -56,7 +55,7 @@ public class Main {
         gridWorld.command(Direction.RIGHT, Evidence.ONE_WALL);
         gridWorld.command(Direction.RIGHT, Evidence.ONE_WALL);
         gridWorld.command(Direction.UP, Evidence.TERMINAL);
-        gridWorld.printEvidenceModule();
+        gridWorld.printCurrentBeliefs();
     }
 
     public static void qD() {
@@ -67,7 +66,7 @@ public class Main {
         gridWorld.command(Direction.RIGHT, Evidence.TWO_WALL);
         gridWorld.command(Direction.RIGHT, Evidence.ONE_WALL);
         gridWorld.command(Direction.RIGHT, Evidence.ONE_WALL);
-
-        gridWorld.printEvidenceModule();
+        gridWorld.printCurrentBeliefs();
     }
+
 }

@@ -18,6 +18,4 @@ public enum Direction {
                 throw new IndexOutOfBoundsException();
         }
     }
-
-
 }

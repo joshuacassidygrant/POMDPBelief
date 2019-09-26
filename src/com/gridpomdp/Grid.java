@@ -1,9 +1,7 @@
 package com.gridpomdp;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.text.DecimalFormat;
+import java.util.*;
 
 public class Grid
 {
@@ -13,6 +11,8 @@ public class Grid
     Map<Evidence, List<EvidenceProbabilityEntry>> observationModel;
     public int numberOfNonTerminalStates;
     Map<State, Double> beliefs;
+
+    DecimalFormat bFormat = new DecimalFormat("##.0000");
 
     /**
      * Constructs a grid of the specified width and height
@@ -131,7 +131,6 @@ public class Grid
         tList.add(e5);
         observationModel.put(Evidence.TERMINAL, tList);
 
-        System.out.println("Initialization complete.");
     }
 
     /**
@@ -212,19 +211,25 @@ public class Grid
         validateBeliefs(newBeliefs);
         beliefs = newBeliefs;
 
-        printEvidenceModule();
+        //printCurrentBeliefs();
 
     }
 
-    public void printEvidenceModule(){
-        StringBuilder sb = new StringBuilder();
+    public void printCurrentBeliefs(){
+        List<String> bStrings = new ArrayList<String>();
         for (Map.Entry<State, Double> entry : beliefs.entrySet()){
+            StringBuilder sb = new StringBuilder();
             sb.append(entry.getKey().coordsString());
             sb.append(": ");
-            sb.append(entry.getValue().toString());
-            sb.append("\n");
+            sb.append(bFormat.format(entry.getValue()));
+            bStrings.add(sb.toString());
         }
-        System.out.println(sb.toString());
+
+        bStrings.sort(Comparator.<String>naturalOrder());
+        for (String str : bStrings) {
+            System.out.println(str);
+        }
+        System.out.println("\n");
     }
 
     private Map<State, Double> normalizeBeliefs(Map<State, Double> beliefMap) {
