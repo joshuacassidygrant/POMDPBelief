@@ -27,7 +27,7 @@ public class State {
 
     public Belief getTrueBelief() {
         if (terminal) return Belief.TERMINAL;
-        if (Y == 3 && !terminal) return Belief.NON_TERMINAL_IN_THIRD_COLUMN;
+        if (X == 2 && !terminal) return Belief.NON_TERMINAL_IN_THIRD_COLUMN;
         return Belief.ALL_OTHER_NON_TERMINAL;
     }
 

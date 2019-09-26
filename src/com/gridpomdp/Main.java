@@ -52,7 +52,7 @@ public class Main {
     public static void qC() {
         System.out.println("qC:");
         Grid gridWorld = generateFreshGridWorld();
-        gridWorld.setBeliefsStateCoord(2, 3);
+        gridWorld.setBeliefsStateCoord(1, 2);
         gridWorld.command(Direction.RIGHT, Evidence.ONE_WALL);
         gridWorld.command(Direction.RIGHT, Evidence.ONE_WALL);
         gridWorld.command(Direction.UP, Evidence.TERMINAL);
@@ -62,7 +62,7 @@ public class Main {
     public static void qD() {
         System.out.println("qD:");
         Grid gridWorld = generateFreshGridWorld();
-        gridWorld.setBeliefsStateCoord(1, 1);
+        gridWorld.setBeliefsStateCoord(0, 0);
         gridWorld.command(Direction.UP, Evidence.TWO_WALL);
         gridWorld.command(Direction.RIGHT, Evidence.TWO_WALL);
         gridWorld.command(Direction.RIGHT, Evidence.ONE_WALL);
